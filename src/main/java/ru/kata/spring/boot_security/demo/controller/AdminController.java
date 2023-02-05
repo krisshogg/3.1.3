@@ -11,57 +11,58 @@ import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.RoleService;
+import ru.kata.spring.boot_security.demo.service.UserService;
 
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
 
-    private RoleService roleService;
+    private UserService userService;
 
     @Autowired
-    public AdminController(RoleService roleService) {
-        this.roleService = roleService;
+    public AdminController(UserService userService) {
+
+        this.userService = userService;
     }
 
-    @GetMapping("")
-    public String showUserList(Model model) {
-        model.addAttribute("users", roleService.findAllUsers());
-
-        return "users";
-    }
-
-    @GetMapping(value = "/new")
-    public String addUserForm(@ModelAttribute("user") User user, Model model) {
-        model.addAttribute("allRoles", roleService.findAllRoles());
-
+    @GetMapping("/new")
+    public String newUser(@ModelAttribute("user") User user) {
         return "new";
     }
 
-    @GetMapping("/{id}/edit")
-    public String editUserForm(@PathVariable(value = "id", required = true) Long userId, Model model) {
-        try {
-            model.addAttribute("user", roleService.findUser(userId));
-        } catch (EmptyResultDataAccessException e) {
-            e.printStackTrace();
+    @PostMapping()
+    public String create(@ModelAttribute("user") User user, BindingResult bindingResult) {
 
-            return "redirect:/admin";
+        if (bindingResult.hasErrors()) {
+            return "new";
         }
-        model.addAttribute("allRoles", roleService.findAllRoles());
 
+        userService.save(user);
+        return "redirect:/";
+    }
+
+    @GetMapping("/{id}/edit")
+    public String edit(Model model, @PathVariable("id") int id) {
+        model.addAttribute("user", userService.findById(id));
         return "edit";
     }
 
-    @PostMapping()
-    public String saveOrUpdateUser(@ModelAttribute("role") Role role) {
+    @PostMapping("/{id}")
+    public String update(@ModelAttribute("user") User user, BindingResult bindingResult, @PathVariable("id") int id) {
 
-            roleService.saveUser(role);
+        if (bindingResult.hasErrors()) {
             return "edit";
+        }
+
+        userService.update(id, user);
+        return "redirect:/";
     }
 
-    @GetMapping("/{id}/delete")
-    public String deleteUser(@PathVariable("id") Long userId) {
-        roleService.deleteUser(userId);
-
-        return "redirect:/admin";
+    @DeleteMapping("{id}")
+    public String delete(@ModelAttribute("user") User user) {
+        userService.delete(user);
+        return "redirect:/";
     }
+
+
 }

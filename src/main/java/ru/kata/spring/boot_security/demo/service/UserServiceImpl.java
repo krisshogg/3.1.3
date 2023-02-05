@@ -36,17 +36,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> findById(Long id) {
+    public Optional<User> findById(int id) {
         return userRepository.findById(id);
     }
 
     @Override
     public void save(User user) {
+        user.setRoles(Collections.singleton(new Role ("ROLE_USER")));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
 
     @Override
-    public void update(long id, User updateUser) {
+    public void update(int id, User updateUser) {
         updateUser.setId(id);
         userRepository.save(updateUser);
     }
@@ -64,6 +66,16 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
         return true;
     }*/
+
+    @Override
+    public void addRole(Role role) {
+
+    }
+
+    @Override
+    public void addUser(User user) {
+
+    }
 
     @Override
     public void delete(User user) {
