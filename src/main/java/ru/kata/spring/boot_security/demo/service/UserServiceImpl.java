@@ -3,9 +3,7 @@ package ru.kata.spring.boot_security.demo.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
@@ -14,11 +12,13 @@ import ru.kata.spring.boot_security.demo.repository.UserRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
     @PersistenceContext
     private EntityManager em;
@@ -29,30 +29,31 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.find(username);
-
-        if (user == null) {
-            throw new UsernameNotFoundException("User not found");
-        }
-
-        return user;
-    }
-
-
     public List<User> findAll() {
         return userRepository.findAll();
     }
 
     @Override
-    public User find(int id) {
-        Optional<User> userFromDb = userRepository.findById(id);
-        return userFromDb.orElse(new User());
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id);
     }
 
+    @Override
+    public void save(User user) {
+        userRepository.save(user);
+    }
+
+    @Override
+    public void update(long id, User updateUser) {
+        updateUser.setId(id);
+        userRepository.save(updateUser);
+    }
+
+    /*@Override
     public boolean save(User user) {
-        User userFromDB = userRepository.find(user.getUsername());
+        Optional<User> userFromDB = userRepository.findByUsername(user.getUsername());
 
         if (userFromDB != null) {
             return false;
@@ -62,23 +63,19 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         return true;
-    }
+    }*/
 
     @Override
     public void delete(User user) {
-
+        userRepository.delete(user);
     }
 
-    public boolean delete(int userId) {
-        if (userRepository.findById(userId).isPresent()) {
-            userRepository.deleteById(userId);
-            return true;
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+       Optional <User> user = userRepository.findByUsername(username);
+        if (null == user) {
+            throw new UsernameNotFoundException(String.format("User username %s not found", username));
         }
-        return false;
+        return user.get();
     }
-
-/*    public List<User> usergtList(Long idMin) {
-        return em.createQuery("SELECT u FROM User u WHERE u.id > :paramId", User.class)
-                .setParameter("paramId", idMin).getResultList();
-    }*/
 }

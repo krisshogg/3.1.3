@@ -11,17 +11,19 @@ import javax.security.auth.login.LoginException;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
-@Service
+
 public interface RoleService extends UserDetailsService {
     List<User> findAllUsers();
 
-    User findUser(Long userId) throws NullPointerException;
+    User findUser(long userId) throws NullPointerException;
 
-    void deleteUser(Long userId);
+    void deleteUser(long userId);
 
     List<Role> findAllRoles();
 
-    void tryIndex(Model model, HttpSession session, LoginException authenticationException, String authenticationName);
+    //void tryIndex(Model model, HttpSession session, LoginException authenticationException, String authenticationName);
 
-    boolean saveUser(User user, BindingResult bindingResult, Model model);
+    void saveUser(Role role);
+
+    void updateUser(long id, Role udaterole);
 }

@@ -8,6 +8,7 @@ import org.springframework.transaction.UnexpectedRollbackException;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 
@@ -51,15 +52,10 @@ public class AdminController {
     }
 
     @PostMapping()
-    public String saveOrUpdateUser(@ModelAttribute("user") User user,
-                                   BindingResult bindingResult, Model model) {
-        // Непонятно как избавиться от этого
-        // Поймать в сервисе транзакционный эксепшн нельзя
-        try {
-            return roleService.saveUser(user, bindingResult, model) ? "redirect:/admin" : "user-form";
-        } catch (AssertionFailure | UnexpectedRollbackException e) {
-            return "user-form";
-        }
+    public String saveOrUpdateUser(@ModelAttribute("role") Role role) {
+
+            roleService.saveUser(role);
+            return "edit";
     }
 
     @GetMapping("/{id}/delete")

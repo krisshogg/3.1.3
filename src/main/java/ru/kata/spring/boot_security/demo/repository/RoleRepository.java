@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 @Repository
-public interface RoleRepository extends JpaRepository<Role, Integer> {
+public interface RoleRepository extends JpaRepository<Role, Long> {
 
     List<Role> findAll();
 
-    Role findRoleByAuthority(String authority) throws NoSuchElementException;
+    //Role findRoleByAuthority(String authority) throws NoSuchElementException;
 }
