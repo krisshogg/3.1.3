@@ -5,29 +5,29 @@ import com.andreyb34rus.JM_Task_3_1_1.model.User;
 import com.andreyb34rus.JM_Task_3_1_1.repository.RoleRepository;
 import com.andreyb34rus.JM_Task_3_1_1.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
-public class UserServiceImpl implements UserService {
-
+@Service
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     private UserRepository userRepository;
 
-    private UserService userService;
-
     private RoleRepository roleRepository;
 
+    @Autowired
+    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordencoder) {
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+    }
 
     @Override
     public User getUserByName(String name) {
-        return userRepository.findByName(name);
+        return userRepository.findByUsername(name);
     }
 
     @Override
@@ -41,33 +41,28 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void save(User user) {
         userRepository.save(user);
     }
 
     @Override
+    @Transactional
     public void update(User user) {
+
         userRepository.save(user);
     }
 
     @Override
+    @Transactional
     public void delete(int id) {
         userRepository.deleteById(id);
     }
 
     @Override
-    public void addRoles(Role role) {
-        roleRepository.save(role);
-    }
-
-    @Override
-    public void addUser(User user) {
-        userRepository.save(user);
-    }
-
-    @Override
+    @Transactional(readOnly = true)
     public User loadUserByUsername(String name) throws UsernameNotFoundException {
-        User user = userRepository.findByName(name);
+        User user = userRepository.findByUsername(name);
         if (null == user) {
             throw new UsernameNotFoundException(String.format("User name %s not found", name));
         }

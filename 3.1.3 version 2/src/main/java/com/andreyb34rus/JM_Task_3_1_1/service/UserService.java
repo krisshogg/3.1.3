@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.List;
 
-public interface UserService extends UserDetailsService {
+public interface UserService {
 
     User getUserByName(String name);
 
@@ -22,10 +22,5 @@ public interface UserService extends UserDetailsService {
     void update(User user);
 
     void delete(int id);
-
-    void addRoles(Role role);
-
-    void addUser(User user);
-
 
 }

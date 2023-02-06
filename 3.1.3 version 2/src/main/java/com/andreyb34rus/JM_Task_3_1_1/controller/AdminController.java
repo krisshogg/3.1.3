@@ -15,6 +15,7 @@ import java.security.Principal;
 @RequestMapping("/admin")
 public class AdminController {
 
+    @Autowired
     UserService userService;
 
     @Autowired

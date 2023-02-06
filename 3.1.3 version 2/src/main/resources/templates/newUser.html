@@ -10,7 +10,7 @@
 <!-- th:object  - объект передаваемый контроллером -->
 <form th:method="POST" th:action="@{/admin/addUser}" th:object="${emptyUser}">
     <label for="name">login name: </label>
-    <input type="text" th:field="*{name}" id="name"/>
+    <input type="text" th:field="*{username}" id="name"/>
     <br/> <br/>
     <label for="password">password: </label>
     <input type="text" th:field="*{password}" id="password"/>

@@ -14,6 +14,7 @@ import java.security.Principal;
 public class UserController {
 
 
+    @Autowired
     private UserService userService;
 
     @GetMapping(value = {"/", "/index"})
