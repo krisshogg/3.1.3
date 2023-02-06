@@ -2,6 +2,7 @@ package com.andreyb34rus.JM_Task_3_1_1.service;
 
 import com.andreyb34rus.JM_Task_3_1_1.model.Role;
 import com.andreyb34rus.JM_Task_3_1_1.model.User;
+import com.andreyb34rus.JM_Task_3_1_1.repository.RoleRepository;
 import com.andreyb34rus.JM_Task_3_1_1.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -20,6 +21,8 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     private UserService userService;
+
+    private RoleRepository roleRepository;
 
 
     @Override
@@ -53,23 +56,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userService.getUserByName(username);
-        List<GrantedAuthority> authorities = getUserAuthority(user.getRoles());
-        return buildUserForAuthentication(user, authorities);
+    public void addRoles(Role role) {
+        roleRepository.save(role);
     }
 
-    private List<GrantedAuthority> getUserAuthority(Set<Role> userRoles) {
-        Set<GrantedAuthority> roles = new HashSet<GrantedAuthority>();
-        for (Role role : userRoles) {
-            roles.add(new SimpleGrantedAuthority(role.getRole()));
+    @Override
+    public void addUser(User user) {
+        userRepository.save(user);
+    }
+
+    @Override
+    public User loadUserByUsername(String name) throws UsernameNotFoundException {
+        User user = userRepository.findByName(name);
+        if (null == user) {
+            throw new UsernameNotFoundException(String.format("User name %s not found", name));
         }
-        List<GrantedAuthority> grantedAuthorities = new ArrayList<>(roles);
-        return grantedAuthorities;
+        return user;
     }
 
-    private UserDetails buildUserForAuthentication(User user, List<GrantedAuthority> authorities) {
-        return new org.springframework.security.core.userdetails.User(user.getName(), user.getPassword(),
-                true, true, true, true, authorities);
-    }
 }

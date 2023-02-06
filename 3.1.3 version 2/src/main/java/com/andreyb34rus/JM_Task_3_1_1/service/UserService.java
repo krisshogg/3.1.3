@@ -1,5 +1,6 @@
 package com.andreyb34rus.JM_Task_3_1_1.service;
 
+import com.andreyb34rus.JM_Task_3_1_1.model.Role;
 import com.andreyb34rus.JM_Task_3_1_1.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,5 +22,10 @@ public interface UserService extends UserDetailsService {
     void update(User user);
 
     void delete(int id);
+
+    void addRoles(Role role);
+
+    void addUser(User user);
+
 
 }
