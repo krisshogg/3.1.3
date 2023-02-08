@@ -77,7 +77,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Transactional(readOnly = true)
     public User loadUserByUsername(String name) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(name);
-        //Hibernate.initialize(user.getRoles());
         if (null == user) {
             throw new UsernameNotFoundException(String.format("User name %s not found", name));
         }

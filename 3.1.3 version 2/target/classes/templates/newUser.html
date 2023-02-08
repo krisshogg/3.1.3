@@ -5,33 +5,50 @@
     <title>New person</title>
 </head>
 <body>
-<h3>Fill in person data</h3>
-<!-- th:action - куда отправляем данные из формы -->
-<!-- th:object  - объект передаваемый контроллером -->
-<form th:method="POST" th:action="@{/admin/addUser}" th:object="${emptyUser}">
-    <label for="name">login name: </label>
-    <input type="text" th:field="*{username}" id="name"/>
-    <br/> <br/>
-    <label for="password">password: </label>
-    <input type="text" th:field="*{password}" id="password"/>
-    <br/>
-    <p>
-    <ul style="list-style-type:none;">
-        <li th:each="checkedRole: ${allRolesList}">
-            <input type="checkbox"
-                   name="checkboxResult"
-                   th:value="${checkedRole}"/>
-            <label
-                    th:text="${checkedRole}"></label>
-        </li>
-    </ul>
-    </p>
-    <br/>
-    <input type="submit" value="save User"/>
+<h1>Add user</h1>
+<form action="#" method="GET" th:action="@{/admin/addUser/}" th:object="${user}">
+    <table>
+        <tr>
+            <td>
+                <label for="username">User name</label>
+                <input type="text" th:field="*{username}" id="username"/>
+                <div th:if="${#fields.hasErrors('username')}" th:errors="*{username}">username error</div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label for="password">Password</label>
+                <input type="password" th:field="*{password}" id="password"/>
+                <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}">password error</div>
+            </td>
+        </tr>
+
+        <br>
+        <tr>
+            <td>
+                <label for="email">Email</label>
+                <input type="text" th:field="*{email}" id="email"/>
+                <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}">email error</div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <label>Roles:
+                    <select size="2" multiple name="listRoles" required="required">
+                        <option selected="selected" value="1">USER</option>
+                        <option value="2">ADMIN</option>
+                    </select>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input type="submit" class="buttonAdd" value="Add user"/>
+            </td>
+        </tr>
+    </table>
 </form>
-<br/>
-<form th:action="@{/logout}" method="POST">
-    <input type="submit" value="Logout"/>
-</form>
+<br>
+<button class="buttonLogout" onclick="window.location.href = '/logout';">Logout</button>
 </body>
 </html>

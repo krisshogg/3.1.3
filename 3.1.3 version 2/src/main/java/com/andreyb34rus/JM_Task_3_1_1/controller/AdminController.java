@@ -28,10 +28,11 @@ public class AdminController {
         return "/usersList";
     }
 
-    @PostMapping("/addUser")
-    public String createUser(@ModelAttribute User user) {
-        userService.save(user);
-        return "redirect:/admin";
+    @GetMapping  ("/addUser")
+    public String createUser(@ModelAttribute User user, Model model) {
+        model.addAttribute("allRoles", userService.getAllRoles());
+        //userService.save(user);
+        return "/newUser";
     }
 
     @GetMapping("/delete/{id}")
