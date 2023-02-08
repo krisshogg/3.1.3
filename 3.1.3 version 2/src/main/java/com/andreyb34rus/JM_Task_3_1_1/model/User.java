@@ -29,15 +29,17 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
 
-    public User() {
 
-    }
 
     public User(String username, String password, String email, Set<Role> roles) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.roles = roles;
+    }
+
+    public User() {
+
     }
 
     public void addRole(Role role) {
@@ -57,14 +59,12 @@ public class User implements UserDetails {
     }
 
     @Override
-    @Query("SELECT u FROM User u JOIN FETCH u.roles")
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
         for (Role role : getRoles()) {
             grantedAuthorities.add(new SimpleGrantedAuthority(role.getAuthority()));
         }
         return grantedAuthorities;
-        //return getRoles();
     }
 
     public String getPassword() {

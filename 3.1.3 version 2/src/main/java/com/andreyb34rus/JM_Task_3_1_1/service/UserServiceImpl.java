@@ -21,10 +21,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private RoleRepository roleRepository;
 
+    private PasswordEncoder passwordEncoder;
+
     @Autowired
     public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordencoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.passwordEncoder = passwordencoder;
     }
 
     @Override
@@ -45,13 +48,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public void save(User user) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
 
     @Override
     @Transactional
-    public void update(User user) {
-        userRepository.save(user);
+    public void update(User updatedUser) {
+        if (!updatedUser.getPassword().equals(getUserById(updatedUser.getId()).getPassword())){
+            updatedUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+        }
+        userRepository.save(updatedUser);
     }
 
     @Override

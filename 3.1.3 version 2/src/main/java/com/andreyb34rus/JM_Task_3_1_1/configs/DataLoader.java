@@ -16,13 +16,13 @@ import java.util.HashSet;
 
 @Component
 public class DataLoader implements ApplicationRunner {
-    private final UserRepository userRepository;
+    private UserService userService;
     private final RoleRepository roleRepository;
 
 
     @Autowired
-    public DataLoader (UserRepository userRepository, RoleRepository roleRepository) {
-        this.userRepository = userRepository;
+    public DataLoader (UserService userService, RoleRepository roleRepository) {
+        this.userService = userService;
         this.roleRepository = roleRepository;
     }
 
@@ -34,10 +34,10 @@ public class DataLoader implements ApplicationRunner {
         roleRepository.save(userRole);
         roleRepository.save(adminRole);
 
-        userRepository.save(new User("user", "user", "fdfok@fifi.com", new HashSet<Role>() {{
+        userService.save(new User("user", "user", "fdfok@fifi.com", new HashSet<Role>() {{
             add(userRole);
         }}));
-        userRepository.save(new User("admin", "admin", "fdfok@fifi.com", new HashSet<Role>() {{
+        userService.save(new User("admin", "admin", "fdfok@fifi.com", new HashSet<Role>() {{
             add(userRole);
             add(adminRole);
         }}));

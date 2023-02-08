@@ -12,7 +12,7 @@ import org.springframework.web.servlet.ModelAndView;
 import java.security.Principal;
 
 @Controller
-@RequestMapping("/admin")
+@RequestMapping(value = "/admin", method = { RequestMethod.GET, RequestMethod.POST })
 public class AdminController {
 
     private UserService userService;
