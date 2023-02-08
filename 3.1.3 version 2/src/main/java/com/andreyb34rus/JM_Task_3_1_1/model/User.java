@@ -1,6 +1,7 @@
 package com.andreyb34rus.JM_Task_3_1_1.model;
 
 
+import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,19 +17,17 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "username")
     private String username;
 
-    //private String username;
     private String password;
 
     private String email;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<Role>();
+    private Set<Role> roles;
 
     public User() {
 
@@ -58,12 +57,14 @@ public class User implements UserDetails {
     }
 
     @Override
+    @Query("SELECT u FROM User u JOIN FETCH u.roles")
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
         for (Role role : getRoles()) {
             grantedAuthorities.add(new SimpleGrantedAuthority(role.getAuthority()));
         }
         return grantedAuthorities;
+        //return getRoles();
     }
 
     public String getPassword() {

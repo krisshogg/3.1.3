@@ -4,7 +4,9 @@ import com.andreyb34rus.JM_Task_3_1_1.model.Role;
 import com.andreyb34rus.JM_Task_3_1_1.model.User;
 import com.andreyb34rus.JM_Task_3_1_1.repository.RoleRepository;
 import com.andreyb34rus.JM_Task_3_1_1.repository.UserRepository;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -49,7 +51,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public void update(User user) {
-
         userRepository.save(user);
     }
 
@@ -60,9 +61,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    @Transactional
+    public List<Role> getAllRoles() {
+        return roleRepository.findAll();
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public User loadUserByUsername(String name) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(name);
+        //Hibernate.initialize(user.getRoles());
         if (null == user) {
             throw new UsernameNotFoundException(String.format("User name %s not found", name));
         }

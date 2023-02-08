@@ -1,11 +1,11 @@
 package com.andreyb34rus.JM_Task_3_1_1.controller;
 
 import com.andreyb34rus.JM_Task_3_1_1.model.User;
-import com.andreyb34rus.JM_Task_3_1_1.service.RoleService;
 import com.andreyb34rus.JM_Task_3_1_1.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -15,12 +15,11 @@ import java.security.Principal;
 @RequestMapping("/admin")
 public class AdminController {
 
+    private UserService userService;
     @Autowired
-    UserService userService;
-
-    @Autowired
-    RoleService roleService;
-
+    public AdminController (UserService userService) {
+        this.userService = userService;
+    }
 
     @GetMapping(value = "")
     public String getAdminPage(Model model, Principal principal) {
@@ -29,21 +28,8 @@ public class AdminController {
         return "/usersList";
     }
 
-    @GetMapping(value = "/newUser")
-    public ModelAndView showNewUserPage(Model model) {
-        ModelAndView mav = new ModelAndView();
-        mav.setViewName("/newUser");
-        mav.addObject("emptyUser", new User());
-        mav.addObject("allRolesList", roleService.getAllRoles());
-        return mav;
-    }
-
     @PostMapping("/addUser")
-    public String createUser(@ModelAttribute User user,
-                             @RequestParam(value = "checkboxResult") String[] checkboxResult) {
-        for (String s : checkboxResult) {
-            user.addRole(roleService.getRoleByName(s));
-        }
+    public String createUser(@ModelAttribute User user) {
         userService.save(user);
         return "redirect:/admin";
     }
@@ -59,16 +45,12 @@ public class AdminController {
         User user = userService.getUserById(id);
         model.addAttribute("user", user);
         model.addAttribute("userRolesList", user.getRoles());
-        model.addAttribute("allRolesList", roleService.getAllRoles());
+        model.addAttribute("allRolesList", userService.getAllRoles());
         return "/editUser";
     }
 
     @PostMapping("/updateUser")
-    public String updateUser(@ModelAttribute User user,
-                             @RequestParam(value = "checkboxResult") String[] checkboxResult) {
-        for (String s : checkboxResult) {
-            user.addRole(roleService.getRoleByName(s));
-        }
+    public String updateUser(@ModelAttribute User user) {
         userService.update(user);
         return "redirect:/admin";
     }

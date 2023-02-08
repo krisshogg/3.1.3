@@ -13,10 +13,11 @@ import java.security.Principal;
 @RequestMapping("")
 public class UserController {
 
-
-    @Autowired
     private UserService userService;
-
+    @Autowired
+    public UserController (UserService userService) {
+        this.userService = userService;
+    }
     @GetMapping(value = {"/", "/index"})
     public String getHomePage() {
         return "/index";
