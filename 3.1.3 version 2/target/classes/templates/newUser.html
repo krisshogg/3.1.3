@@ -2,53 +2,39 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>New person</title>
+    <title>Add user</title>
 </head>
 <body>
-<h1>Add user</h1>
-<form action="#" method="GET" th:action="@{/admin/addUser/}" th:object="${user}">
-    <table>
-        <tr>
-            <td>
-                <label for="username">User name</label>
-                <input type="text" th:field="*{username}" id="username"/>
-                <div th:if="${#fields.hasErrors('username')}" th:errors="*{username}">username error</div>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="password">Password</label>
-                <input type="password" th:field="*{password}" id="password"/>
-                <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}">password error</div>
-            </td>
-        </tr>
-
-        <br>
-        <tr>
-            <td>
-                <label for="email">Email</label>
-                <input type="text" th:field="*{email}" id="email"/>
-                <div th:if="${#fields.hasErrors('email')}" th:errors="*{email}">email error</div>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label>Roles:
-                    <select size="2" multiple name="listRoles" required="required">
-                        <option selected="selected" value="1">USER</option>
-                        <option value="2">ADMIN</option>
-                    </select>
-                </label>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <input type="submit" class="buttonAdd" value="Add user"/>
-            </td>
-        </tr>
-    </table>
+<form th:method="POST" th:action="@{/admin}" th:object="${user}">
+    <input hidden="true" type="number" th:field="*{id}"/>
+    <label for="name">Login name: </label>
+    <input type="text" th:field="*{username}" id="name"/>
+    <br/> <br/>
+    <label for="password">Password: </label>
+    <input type="text" th:field="*{password}" id="password"/>
+    <br/> <br/>
+    <tr>
+        <td>
+            <label>Roles:
+                <select size="2" multiple name="listRoles" required="required">
+                    <option selected="selected" value="1">USER</option>
+                    <option value="2">ADMIN</option>
+                </select>
+            </label>
+        </td>
+    </tr>
+    <br/> <br/>
+    <input type="submit" value="Add"/>
 </form>
-<br>
-<button class="buttonLogout" onclick="window.location.href = '/logout';">Logout</button>
+<br/>
+<form th:method="GET" th:action="@{/admin}">
+    <input type="submit" value="Cancel"/>
+</form>
+<br/>
+<div>
+    <form th:action="@{/logout}" method="POST">
+        <input type="Submit" value="Logout"/>
+    </form>
+</div>
 </body>
 </html>
